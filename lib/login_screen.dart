@@ -313,16 +313,20 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                           const Text('Remember me'),
                           const Spacer(),
                           TextButton(
-                            onPressed: () {
-                              Navigator.push(
+                            onPressed: () async {
+                              final result = await Navigator.push<Map<String, String>>(
                                 context,
-                                MaterialPageRoute(builder: (_) => const ForgotPasswordScreen()),
+                                MaterialPageRoute(builder: (context) => const ForgotPasswordScreen()),
                               );
+
+                              if (result != null) {
+                                setState(() {
+                                  emailController.text = result['email'] ?? '';
+                                  passwordController.text = result['password'] ?? '';
+                                });
+                              }
                             },
-                            child: Text(
-                              'Forgot password?',
-                              style: TextStyle(color: theme.primaryColor),
-                            ),
+                            child: const Text('Forgot password?'),
                           ),
                         ],
                       ),

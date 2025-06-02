@@ -14,17 +14,26 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   void _recoverPassword() {
     final email = _emailController.text.trim();
+
     if (!_userStore.userExists(email)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Email not registered')),
       );
     } else {
+      final password = _userStore.getPasswordForEmail(email) ?? 'Unavailable';
+
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Password recovery link sent to $email')),
+        SnackBar(content: Text('Password recovery: Your password is "$password"')),
       );
-      Navigator.pop(context);
+
+      // Send back recovered data to previous screen (optional)
+      Navigator.pop(context, {
+        'email': email,
+        'password': password,
+      });
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +41,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       backgroundColor: const Color(0xFFF0F3F7),
       body: Stack(
         children: [
-          // Decorative wave header
           ClipPath(
             clipper: WaveClipper(),
             child: Container(
@@ -53,7 +61,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 20),
-                  // Back button
                   InkWell(
                     borderRadius: BorderRadius.circular(32),
                     onTap: () => Navigator.of(context).pop(),
@@ -88,8 +95,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     ),
                   ),
                   const SizedBox(height: 50),
-
-                  // Input field
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -116,8 +121,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     ),
                   ),
                   const SizedBox(height: 40),
-
-                  // Recover button
                   SizedBox(
                     width: double.infinity,
                     height: 52,
@@ -165,7 +168,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   }
 }
 
-// Custom curved header clipper
+// Decorative wave clipper
 class WaveClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {

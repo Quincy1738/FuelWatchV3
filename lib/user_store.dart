@@ -51,6 +51,7 @@ class UserStore {
     _saveToPrefs();
   }
 
+
   bool userExists(String email) => _users.containsKey(email);
 
   bool validateUser(String email, String password) {
@@ -61,6 +62,11 @@ class UserStore {
       return true;
     }
     return false;
+  }
+
+  // ✅ Add this method to retrieve stored password
+  String? getPasswordForEmail(String email) {
+    return _users[email];
   }
 
   void updateUserInfo({
